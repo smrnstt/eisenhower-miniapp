@@ -1,109 +1,130 @@
+/* Общие настройки страницы */
 body {
   font-family: 'Montserrat', sans-serif;
-  margin: 2;
-  padding: 12px;
+  margin: 0;
+  padding: 15px;
   background: #f0f8ff;
+  color: #333;
+  /* Убираем лишние отступы для мобилок */
+  box-sizing: border-box;
+}
+
+/* Кнопка "Удалить выполненные" — делаем маленькой и аккуратной */
+#clear-completed {
+  display: block;
+  margin: 0 auto 25px auto; /* Отступ 25px снизу до заголовка */
+  background-color: #ff6b6b;
+  font-size: 13px;           /* Уменьшенный шрифт */
+  padding: 8px 16px;        /* Компактные размеры */
+  font-weight: 500;
+  border-radius: 20px;      /* Скругленные края */
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+#clear-completed:active {
+  opacity: 0.7;
 }
 
 h1 {
   text-align: center;
-  margin-bottom: 12px;
+  font-size: 22px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
+/* Сетка карточек */
 .matrix {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 10px;
-  height: calc(100vh - 80px);
+  grid-template-columns: 1fr 1fr; /* 2 колонки по умолчанию */
+  gap: 12px;
+  height: auto; 
 }
 
+/* Адаптивность для мобильных телефонов */
+@media (max-width: 480px) {
+  .matrix {
+    grid-template-columns: 1fr; /* На маленьких экранах 1 колонка */
+  }
+}
+
+/* Стили карточек (квадрантов) */
 .cell {
   background: white;
-  border-radius: 12px;
-  padding: 10px;
+  border-radius: 16px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  min-height: 180px;
+  border: 1px solid #eef2f5;
 }
 
 .cell h2 {
-  font-size: 18px;
-  margin: 0 0 6px;
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
 }
 
-button {
-  background-color: #ff69b4;  
-  color: white;  
-font-family: 'Montserrat', sans-serif;
+/* Кнопка добавления внутри ячейки */
+.cell button {
+  background-color: #ff69b4;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-font-size: 16px;   
+  font-size: 14px;
   border: none;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   cursor: pointer;
+  margin-bottom: 15px;
+  transition: transform 0.1s;
 }
 
-button:hover {
-  background-color: #ff1493;
+.cell button:active {
+  transform: scale(0.95);
 }
 
+/* Списки задач */
 ul {
-  list-style: none;  /* убирает стандартные маркеры списка (точки) */
-  padding: 2;        /* внутренний отступ сверху/снизу/слева/справа */
-  margin: 0;         /* убирает отступы вокруг списка */
-  overflow-y: auto;  /* добавляет вертикальную прокрутку, если список длинный */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 li {
-  margin-bottom: 8px; /* расстояние между элементами списка */
-}
-
-ul li span {
-  font-size: 16px;                   
-  font-family: 'Montserrat', sans-serif; /* исправил на корректное имя шрифта */
-  color: #000;                        /* базовый цвет текста */
-}
-
-/* Эффект для элемента, который мы тянем в данный момент */
-li.dragging {
-  opacity: 0.5;
-  cursor: move;
-}
-
-/* Указатель мыши в виде руки при наведении на задачу */
-li {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 8px;
   cursor: grab;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background 0.2s;
+  font-size: 15px;
 }
 
 li:active {
   cursor: grabbing;
 }
 
-/* Чтобы в пустую ячейку было легче попасть, растянем список на всю высоту */
-.cell ul {
-  flex-grow: 1;
-  min-height: 50px;
+li input[type="checkbox"] {
+  margin-top: 4px;
+  margin-right: 10px;
+  min-width: 18px;
+  min-height: 18px;
 }
 
-#clear-completed {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  background-color: #000000;
-  padding: 10px 15px;
-  font-size: 13px;
+/* Эффект при перетаскивании */
+li.dragging {
+  opacity: 0.4;
+  background: #eee;
 }
 
-#clear-completed:hover {
-  background-color: #cc0000;
-}
-
-/* Адаптация заголовка, чтобы он не налезал на кнопку на узких экранах */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  padding-top: 10px;
+/* Подсветка зоны, куда можно бросить задачу */
+.cell.drag-over {
+  background: #fff0f5;
+  border: 2px dashed #ff69b4;
 }
