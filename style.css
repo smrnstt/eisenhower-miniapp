@@ -131,20 +131,17 @@ li.dragging {
 
 /* Стиль для задачи, которая летит за пальцем */
 .ghost {
-    position: fixed !important; /* Именно fixed, чтобы не зависеть от прокрутки */
-    pointer-events: none;      /* Чтобы палец кликал "сквозь" призрак */
-    z-index: 9999;
+    position: absolute;
+    pointer-events: none; /* Чтобы палец "видел" то, что под призраком */
+    z-index: 1000;
     opacity: 0.8;
-    background: white !important;
-    border: 1px solid #ddd;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    list-style: none;
-    padding: 10px;
-    border-radius: 8px;
-    width: 150px;              /* Ширина призрака */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transform: scale(1.05); /* Немного увеличиваем при переносе */
+    background: #ffffff !important;
+    width: 200px; /* Фиксируем ширину, чтобы не прыгала */
 }
 
-/* Скрываем оригинал при переносе */
+/* Скрываем оригинал, пока мы его несем */
 li.dragging {
-    opacity: 0.1;
+    opacity: 0.2;
 }
