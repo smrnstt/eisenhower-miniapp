@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
-  <title>TASK MANAGER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TASK MANAGER</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<button id="clear-completed" onclick="clearCompleted()">🗑 Удалить выполненные</button>
-<h1>TASK MANAGER</h1>
+  <button id="clear-completed" onclick="clearCompleted()">🗑 Удалить выполненные</button>
+  <h1>TASK MANAGER</h1>
 
-<div class="matrix">
-  <div class="cell" data-cell="0">
-    <h2>💥Срочное и важное</h2>
-    <button onclick="addTask(0)">➕ Добавить задачу</button>
-    <ul></ul>
+  <div class="matrix">
+    <div class="cell" data-cell="0">
+      <h2>💥Срочное и важное</h2>
+      <button onclick="addTask(0)">➕ Добавить задачу</button>
+      <ul id="list-0"></ul>
+    </div>
+
+    <div class="cell" data-cell="1">
+      <h2>🙏🏼Несрочное, но важное</h2>
+      <button onclick="addTask(1)">➕ Добавить задачу</button>
+      <ul id="list-1"></ul>
+    </div>
+
+    <div class="cell" data-cell="2">
+      <h2>⚡️Срочное, но неважное</h2>
+      <button onclick="addTask(2)">➕ Добавить задачу</button>
+      <ul id="list-2"></ul>
+    </div>
+
+    <div class="cell" data-cell="3">
+      <h2>☕️Несрочное и неважное</h2>
+      <button onclick="addTask(3)">➕ Добавить задачу</button>
+      <ul id="list-3"></ul>
+    </div>
   </div>
 
-  <div class="cell" data-cell="1">
-    <h2>🙏🏼Несрочное, но важное</h2>
-    <button onclick="addTask(1)">➕ Добавить задачу</button>
-    <ul></ul>
-  </div>
-
-  <div class="cell" data-cell="2">
-    <h2>⚡️Срочное, но неважное</h2>
-    <button onclick="addTask(2)">➕ Добавить задачу</button>
-    <ul></ul>
-  </div>
-
-  <div class="cell" data-cell="3">
-    <h2>😌Несрочное и неважное</h2>
-    <button onclick="addTask(3)">➕ Добавить задачу</button>
-    <ul></ul>
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

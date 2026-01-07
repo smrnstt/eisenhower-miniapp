@@ -1,157 +1,103 @@
-// --- ФУНКЦИИ СОХРАНЕНИЯ И ЗАГРУЗКИ ---
-
-// Инициализация Telegram WebApp
-const tg = window.Telegram.WebApp;
-tg.expand(); // Расширяем на весь экран
-
-// --- ФУНКЦИИ СОХРАНЕНИЯ И ЗАГРУЗКИ ЧЕРЕЗ ОБЛАКО ---
-
-function saveToLocalStorage() {
-  const data = [];
-  const cells = document.querySelectorAll('.cell');
-  
-  cells.forEach(cell => {
-    const cellIndex = cell.getAttribute('data-cell');
-    const tasks = [];
-    cell.querySelectorAll('li').forEach(li => {
-      tasks.push({
-        text: li.querySelector('span').textContent.trim(),
-        checked: li.querySelector('input').checked
-      });
-    });
-    data.push({ cellIndex, tasks });
-  });
-
-  // Сохраняем в облако Telegram (ключ 'tasks', значение должно быть строкой)
-  const jsonData = JSON.stringify(data);
-  
-  if (tg.CloudStorage) {
-    tg.CloudStorage.setItem('tasks', jsonData, (err, success) => {
-      if (err) console.error("Ошибка сохранения в облако:", err);
-    });
-  }
-}
-
-function loadFromLocalStorage() {
-  if (tg.CloudStorage) {
-    tg.CloudStorage.getItem('tasks', (err, value) => {
-      if (err) {
-        console.error("Ошибка загрузки из облака:", err);
-        return;
-      }
-      if (value) {
-        const data = JSON.parse(value);
-        // Очищаем текущие списки перед загрузкой, чтобы не дублировать
-        document.querySelectorAll('.cell ul').forEach(ul => ul.innerHTML = '');
-        
-        data.forEach(item => {
-          item.tasks.forEach(task => {
-            renderTask(item.cellIndex, task.text, task.checked);
-          });
-        });
-      }
-    });
-  }
-}
-// --- ЛОГИКА СОЗДАНИЯ ЭЛЕМЕНТОВ ---
-
-// Вспомогательная функция для отрисовки (используется и при добавлении, и при загрузке)
+// 1. Функция для отрисовки задачи (создает HTML-элемент)
 function renderTask(cellIndex, text, isChecked = false) {
-  const cell = document.querySelector(`.cell[data-cell="${cellIndex}"] ul`);
-  const li = document.createElement("li");
-  
-  li.draggable = true;
-  
-  li.addEventListener('dragstart', () => li.classList.add('dragging'));
-  li.addEventListener('dragend', () => {
-    li.classList.remove('dragging');
-    saveToLocalStorage(); // Сохраняем порядок после перетаскивания
-  });
+    const list = document.querySelector(`.cell[data-cell="${cellIndex}"] ul`);
+    const li = document.createElement("li");
+    li.draggable = true;
 
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = isChecked;
+    li.addEventListener('dragstart', () => li.classList.add('dragging'));
+    li.addEventListener('dragend', () => {
+        li.classList.remove('dragging');
+        saveAllData(); // Сохраняем после перетаскивания
+    });
 
-  const label = document.createElement("span");
-  label.textContent = " " + text;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = isChecked;
 
-  // Стилизация в зависимости от статуса
-  const applyStyles = (checked) => {
-    if (checked) {
-      label.style.textDecoration = "line-through";
-      label.style.color = "#818080";
-    } else {
-      label.style.textDecoration = "none";
-      label.style.color = "#000";
+    const label = document.createElement("span");
+    label.textContent = " " + text;
+
+    if (isChecked) {
+        label.style.textDecoration = "line-through";
+        label.style.color = "#818080";
     }
-  };
 
-  applyStyles(isChecked);
+    checkbox.onchange = () => {
+        if (checkbox.checked) {
+            label.style.textDecoration = "line-through";
+            label.style.color = "#818080";
+        } else {
+            label.style.textDecoration = "none";
+            label.style.color = "#000";
+        }
+        saveAllData(); // Сохраняем при клике на чекбокс
+    };
 
-  checkbox.onchange = () => {
-    applyStyles(checkbox.checked);
-    saveToLocalStorage(); // Сохраняем состояние галочки
-  };
-
-  li.appendChild(checkbox);
-  li.appendChild(label);
-  cell.appendChild(li);
+    li.appendChild(checkbox);
+    li.appendChild(label);
+    list.appendChild(li);
 }
 
-// Основная функция добавления (через кнопку)
+// 2. Функция добавления новой задачи
 function addTask(cellIndex) {
-  const text = prompt("Введите задачу:");
-  if (!text) return;
-
-  renderTask(cellIndex, text);
-  saveToLocalStorage(); // Сохраняем новую задачу
+    const text = prompt("Введите задачу:");
+    if (!text) return;
+    renderTask(cellIndex, text);
+    saveAllData();
 }
 
-// --- НАСТРОЙКА ЗОН DROP ---
+// 3. СОХРАНЕНИЕ: Собирает все задачи из всех списков и пишет в память
+function saveAllData() {
+    const allData = [];
+    document.querySelectorAll('.cell').forEach(cell => {
+        const cellIndex = cell.getAttribute('data-cell');
+        const tasks = [];
+        cell.querySelectorAll('li').forEach(li => {
+            tasks.push({
+                text: li.querySelector('span').textContent.trim(),
+                checked: li.querySelector('input').checked
+            });
+        });
+        allData.push({ cellIndex, tasks });
+    });
+    localStorage.setItem('myTasks', JSON.stringify(allData));
+}
 
-const cells = document.querySelectorAll('.cell');
+// 4. ЗАГРУЗКА: Достает задачи из памяти при открытии страницы
+function loadAllData() {
+    const saved = localStorage.getItem('myTasks');
+    if (!saved) return;
+    
+    const data = JSON.parse(saved);
+    data.forEach(item => {
+        item.tasks.forEach(task => {
+            renderTask(item.cellIndex, task.text, task.checked);
+        });
+    });
+}
 
-cells.forEach(cell => {
-  const list = cell.querySelector('ul');
-
-  cell.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    cell.style.background = "#fff0f5";
-  });
-
-  cell.addEventListener('dragleave', () => {
-    cell.style.background = "white";
-  });
-
-  cell.addEventListener('drop', () => {
-    const draggingElement = document.querySelector('.dragging');
-    if (draggingElement) {
-      list.appendChild(draggingElement);
-      saveToLocalStorage(); // Сохраняем факт перемещения в другую ячейку
+// 5. Очистка выполненных
+function clearCompleted() {
+    const completed = document.querySelectorAll('li input:checked');
+    if (completed.length === 0) return;
+    
+    if (confirm("Удалить выполненные?")) {
+        completed.forEach(el => el.closest('li').remove());
+        saveAllData();
     }
-    cell.style.background = "white";
-  });
+}
+
+// Настройка Drag & Drop зон
+document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('dragover', (e) => e.preventDefault());
+    cell.addEventListener('drop', () => {
+        const dragging = document.querySelector('.dragging');
+        if (dragging) {
+            cell.querySelector('ul').appendChild(dragging);
+            saveAllData();
+        }
+    });
 });
 
-// --- УДАЛЕНИЕ ---
-
-function clearCompleted() {
-  const completedTasks = document.querySelectorAll('li input:checked');
-
-  if (completedTasks.length === 0) {
-    alert("Нет выполненных задач для удаления.");
-    return;
-  }
-
-  const confirmed = confirm(`Удалить выполненные задачи (${completedTasks.length} шт.)?`);
-
-  if (confirmed) {
-    completedTasks.forEach(checkbox => {
-      checkbox.closest('li').remove();
-    });
-    saveToLocalStorage(); // Сохраняем список после очистки
-  }
-}
-
-// ЗАПУСК: Загружаем данные при старте скрипта
-loadFromLocalStorage();
+// ЗАПУСК ПРИ ЗАГРУЗКЕ
+loadAllData();
