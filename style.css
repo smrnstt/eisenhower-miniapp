@@ -128,3 +128,20 @@ li.dragging {
   background: #fff0f5;
   border: 2px dashed #ff69b4;
 }
+
+/* Стиль для задачи, которая летит за пальцем */
+.ghost {
+    position: absolute;
+    pointer-events: none; /* Чтобы палец "видел" то, что под призраком */
+    z-index: 1000;
+    opacity: 0.8;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transform: scale(1.05); /* Немного увеличиваем при переносе */
+    background: #ffffff !important;
+    width: 200px; /* Фиксируем ширину, чтобы не прыгала */
+}
+
+/* Скрываем оригинал, пока мы его несем */
+li.dragging {
+    opacity: 0.2;
+}
