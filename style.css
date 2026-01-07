@@ -1,0 +1,109 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 2;
+  padding: 12px;
+  background: #f0f8ff;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  height: calc(100vh - 80px);
+}
+
+.cell {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cell h2 {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+button {
+  background-color: #ff69b4;  
+  color: white;  
+font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+font-size: 16px;   
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff1493;
+}
+
+ul {
+  list-style: none;  /* убирает стандартные маркеры списка (точки) */
+  padding: 2;        /* внутренний отступ сверху/снизу/слева/справа */
+  margin: 0;         /* убирает отступы вокруг списка */
+  overflow-y: auto;  /* добавляет вертикальную прокрутку, если список длинный */
+}
+
+li {
+  margin-bottom: 8px; /* расстояние между элементами списка */
+}
+
+ul li span {
+  font-size: 16px;                   
+  font-family: 'Montserrat', sans-serif; /* исправил на корректное имя шрифта */
+  color: #000;                        /* базовый цвет текста */
+}
+
+/* Эффект для элемента, который мы тянем в данный момент */
+li.dragging {
+  opacity: 0.5;
+  cursor: move;
+}
+
+/* Указатель мыши в виде руки при наведении на задачу */
+li {
+  cursor: grab;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+li:active {
+  cursor: grabbing;
+}
+
+/* Чтобы в пустую ячейку было легче попасть, растянем список на всю высоту */
+.cell ul {
+  flex-grow: 1;
+  min-height: 50px;
+}
+
+#clear-completed {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #000000;
+  padding: 10px 15px;
+  font-size: 13px;
+}
+
+#clear-completed:hover {
+  background-color: #cc0000;
+}
+
+/* Адаптация заголовка, чтобы он не налезал на кнопку на узких экранах */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
